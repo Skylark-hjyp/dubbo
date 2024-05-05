@@ -31,6 +31,7 @@ import java.net.InetSocketAddress;
 
 import static org.apache.dubbo.common.constants.CommonConstants.REMOTE_APPLICATION_KEY;
 import static org.apache.dubbo.common.constants.LoggerCodeConstants.PROTOCOL_TIMEOUT_SERVER;
+import static org.apache.dubbo.rpc.protocol.tri.TripleConstant.REMOTE_ADDRESS_KEY;
 
 public abstract class AbstractServerCallListener implements ServerCallListener {
 
@@ -56,7 +57,7 @@ public abstract class AbstractServerCallListener implements ServerCallListener {
                     ((Http2CancelableStreamObserver<Object>) responseObserver).getCancellationContext());
         }
         InetSocketAddress remoteAddress =
-                (InetSocketAddress) invocation.getAttributes().remove("tri.remote.address");
+                (InetSocketAddress) invocation.getAttributes().remove(REMOTE_ADDRESS_KEY);
         RpcContext.getServiceContext().setRemoteAddress(remoteAddress);
         String remoteApp = (String) invocation.getAttributes().remove(TripleHeaderEnum.CONSUMER_APP_NAME_KEY);
         if (null != remoteApp) {
@@ -66,6 +67,10 @@ public abstract class AbstractServerCallListener implements ServerCallListener {
         try {
             final long stInMillis = System.currentTimeMillis();
             final Result response = invoker.invoke(invocation);
+            if (response.hasException()) {
+                onResponseException(response.getException());
+                return;
+            }
             response.whenCompleteWithContext((r, t) -> {
                 if (responseObserver instanceof AttachmentHolder) {
                     ((AttachmentHolder) responseObserver).setResponseAttachments(response.getObjectAttachments());
@@ -74,8 +79,8 @@ public abstract class AbstractServerCallListener implements ServerCallListener {
                     responseObserver.onError(t);
                     return;
                 }
-                if (response.hasException()) {
-                    onResponseException(response.getException());
+                if (r.hasException()) {
+                    onResponseException(r.getException());
                     return;
                 }
                 final long cost = System.currentTimeMillis() - stInMillis;
