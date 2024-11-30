@@ -1,7 +1,7 @@
 {
   "xds_servers": [
     {
-      "server_uri": "47.251.12.148:15010",
+      "server_uri": "istiod.istio-system.svc:15010",
       "channel_creds": [
         {
           "type": "insecure"
@@ -46,7 +46,7 @@
       },
       "MESH_ID": "cluster.local",
       "NAME": "echo-v1-5859d7bc7d-wlb2d",
-      "NAMESPACE": "echo-grpc",
+      "NAMESPACE": "dubbo-demo",
       "NODE_NAME": "us-west-1.192.168.19.107",
       "OWNER": "kubernetes://apis/apps/v1/namespaces/echo-grpc/deployments/echo-v1",
       "PILOT_SAN": [

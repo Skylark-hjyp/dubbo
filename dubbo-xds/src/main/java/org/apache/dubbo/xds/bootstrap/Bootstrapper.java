@@ -46,7 +46,7 @@ public class Bootstrapper {
     public static final String XDSTP_SCHEME = "xdstp:";
     private static final String BOOTSTRAP_PATH_SYS_ENV_VAR = "GRPC_XDS_BOOTSTRAP";
     private static final String BOOTSTRAP_CONFIG_SYS_ENV_VAR = "GRPC_XDS_BOOTSTRAP_CONFIG";
-    private static final String DEFAULT_BOOTSTRAP_PATH = "/etc/istio/proxy/grpc-bootstrap.json";
+    private static final String DEFAULT_BOOTSTRAP_PATH = "/bootstrap.json";
     public static final String CLIENT_FEATURE_DISABLE_OVERPROVISIONING = "envoy.lb.does_not_support_overprovisioning";
     public static final String CLIENT_FEATURE_RESOURCE_IN_SOTW = "xds.config.resource-in-sotw";
     private static final String SERVER_FEATURE_IGNORE_RESOURCE_DELETION = "ignore_resource_deletion";
@@ -75,6 +75,7 @@ public class Bootstrapper {
 
         if (jsonContent == null) {
             // TODO:try loading from Dubbo control panel and user specified URL
+            return null;
         }
 
         Map<String, ?> rawBootstrap;
@@ -99,7 +100,6 @@ public class Bootstrapper {
             // Check environment variable and system property
             filePath = bootstrapPathFromEnvVar;
         }
-
         if (filePath != null) {
             logger.log(XdsLogLevel.INFO, "Reading bootstrap file from {0}", filePath);
             jsonContent = reader.readFile(filePath);

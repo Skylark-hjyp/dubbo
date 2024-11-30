@@ -47,13 +47,18 @@ public class NodeBuilder {
         metadataMap.put(
                 "SERVICE_ACCOUNT", Value.newBuilder().setStringValue(saName).build());
 
+        metadataMap.put("GENERATOR", Value.newBuilder().setStringValue("grpc").build());
+        metadataMap.put(
+                "NAMESPACE", Value.newBuilder().setStringValue("dubbo-demo").build());
+
         Struct metadata = Struct.newBuilder().putAllFields(metadataMap).build();
 
         // id -> sidecar~ip~{POD_NAME}~{NAMESPACE_NAME}.svc.cluster.local
         // cluster -> {SVC_NAME}
         return Node.newBuilder()
                 .setMetadata(metadata)
-                .setId("sidecar~" + NetUtils.getLocalHost() + "~" + podName + "~" + podNamespace + SVC_CLUSTER_LOCAL)
+                .setId("sidecar~" + NetUtils.getLocalHost() + "~" + "dubbo-v4-5764868574-whqs9.dubbo-demo" + "~"
+                        + "dubbo-demo" + SVC_CLUSTER_LOCAL)
                 .setCluster(svcName)
                 .build();
     }

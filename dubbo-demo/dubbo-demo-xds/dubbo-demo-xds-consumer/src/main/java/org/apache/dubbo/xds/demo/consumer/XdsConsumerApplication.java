@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableDubbo
 public class XdsConsumerApplication {
-    @DubboReference(providedBy = "echo:7070")
+    @DubboReference(providedBy = "dubbo-demo-xds-provider-service:50051")
     private DemoService demoService;
 
     public static void main(String[] args) throws InterruptedException {
@@ -42,6 +42,7 @@ public class XdsConsumerApplication {
         // System.setProperty(IstioConstant.PILOT_CERT_PROVIDER_KEY, "istiod");
         ConfigurableApplicationContext context = SpringApplication.run(XdsConsumerApplication.class, args);
         XdsConsumerApplication application = context.getBean(XdsConsumerApplication.class);
+        Thread.sleep(10000);
         while (true) {
             try {
                 String result = application.doSayHello("world");
@@ -50,7 +51,7 @@ public class XdsConsumerApplication {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Thread.sleep(2000);
+            Thread.sleep(10000);
         }
     }
 
