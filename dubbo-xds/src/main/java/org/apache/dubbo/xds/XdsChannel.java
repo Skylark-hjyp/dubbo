@@ -19,6 +19,7 @@ package org.apache.dubbo.xds;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.logger.ErrorTypeAwareLogger;
 import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.xds.bootstrap.BootstrapInfo;
 import org.apache.dubbo.xds.bootstrap.Bootstrapper;
 import org.apache.dubbo.xds.security.api.CertPair;
 import org.apache.dubbo.xds.security.api.CertSource;
@@ -90,11 +91,11 @@ public class XdsChannel {
                             .build();
                 }
             } else {
-                Bootstrapper bootstrapper = new Bootstrapper();
-                Bootstrapper.BootstrapInfo bootstrapInfo = bootstrapper.bootstrap();
+                BootstrapInfo bootstrapInfo = Bootstrapper.getInstance().bootstrap();
+                String server = bootstrapInfo.getServers().get(0).getTarget();
                 // URLAddress address = URLAddress.parse(bootstrapInfo.getServers().get(0).getTarget(), null, false);
                 // EpollEventLoopGroup elg = new EpollEventLoopGroup();
-                managedChannel = NettyChannelBuilder.forAddress("istiod.istio-system.svc", 15010)
+                managedChannel = NettyChannelBuilder.forTarget(server)
                         // .eventLoopGroup(elg)
                         // .channelType(EpollDomainSocketChannel.class)
                         .usePlaintext()

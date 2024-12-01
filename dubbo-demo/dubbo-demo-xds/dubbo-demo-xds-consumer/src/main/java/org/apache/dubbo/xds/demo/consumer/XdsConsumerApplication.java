@@ -40,6 +40,9 @@ public class XdsConsumerApplication {
         // System.setProperty("NAMESPACE", "dubbo-demo");
         // IstioConstant.KUBERNETES_SA_PATH = "/Users/smzdm/hjf/xds/resources/token";
         // System.setProperty(IstioConstant.PILOT_CERT_PROVIDER_KEY, "istiod");
+
+        // System.setProperty("GRPC_XDS_BOOTSTRAP",
+        // "/Users/hejianfei/code/server/dubbo/dubbo-demo/dubbo-demo-xds/dubbo-demo-xds-consumer/src/main/resources/bootstrap.json");
         ConfigurableApplicationContext context = SpringApplication.run(XdsConsumerApplication.class, args);
         XdsConsumerApplication application = context.getBean(XdsConsumerApplication.class);
         Thread.sleep(10000);

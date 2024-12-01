@@ -63,9 +63,9 @@ public class AdsObserver {
 
     private final Map<String, XdsResourceType<?>> subscribedResourceTypeUrls = new HashMap<>();
 
-    public AdsObserver(URL url, Node node) {
+    public AdsObserver(URL url) {
         this.url = url;
-        this.node = node;
+        this.node = NodeBuilder.build();
         this.xdsChannel = new XdsChannel(url);
         this.applicationModel = url.getOrDefaultApplicationModel();
     }
