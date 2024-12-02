@@ -57,7 +57,7 @@ mvn clean install -DskipTests
 
 3、通过`service.yaml`文件，创建`k8s`资源。
 
-4、端口转发，将`istiod`的`15010`端口进行转发，方便本地直连`istiod`。将d`ubbo-demo-xds-consumer`服务的`31000`端口进行转发，方便远程`debug`。
+4、端口转发，将`istiod`的`15010`端口进行转发，方便本地直连`istiod`。将`dubbo-demo-xds-consumer`服务的`31000`端口进行转发，方便远程`debug`。
 
 ## 2.4 IDEA开启远程debug
 运行`start.sh`脚本后，通过`Docker Desktop`查看对应`pod`日志，可以看到`dubbo-demo-xds-provider`服务会自动运行，而`dubbo-demo-xds-consumer`服务暂时挂起，等待调试中。此时需要编辑本地`idea调试配置`，增加断点，即可开始调试。
@@ -65,6 +65,7 @@ mvn clean install -DskipTests
 **1、编辑调试配置**
 
 ![img.png](images/2.png)
+
 **2、新增`Remote JVM Debug`类型的配置，端口设置为`31000`，`module`选择`dubbo-demo-xds-consumer`。**
 
 ![img.png](images/3.png)
@@ -86,14 +87,18 @@ mvn clean install -DskipTests
 
 所以现在介绍一种效率更高的开发方法，修改代码后直接点击调试即可，不需要重新编译打包部署。
 
-但这种方式只能用于调试资源加载过程，实际调用k8s中的provider会因为网络访问不到而失败。
+但这种方式只能用于调试资源加载过程，实际调用`k8s`中的`provider`会因为网络访问不到而失败。
 
 原理：仍然在`k8s`中部署`provider`服务，但是`consumer`服务在本地`IDEA`中进行启动，同时转发`istiod`服务的`15010`端口，确保可以从`istiod`中获取`xds`资源。
 
 整体步骤如下：
+
 1、还是运行`./start.sh`将`provider`服务部署到`k8s`环境中，并且转发了`istiod`服务的`15010`端口。
+
 2、修改本地`dubbo-demo-xds-consumer/src/resource/bootstrap.json` 文件，修改`server_uri为localhost:15010`。
+
 3、在 `XdsConsumerApplication` 启动类`main()`函数中设置环境变量指明`bootstrap.json`所在路径， `System.setProperty("GRPC_XDS_BOOTSTRAP", "修改为自己的路径")`
+
 4、点击调试即可进行本地调试。
 
 ![img.png](images/5.png)
